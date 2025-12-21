@@ -5,15 +5,15 @@
     </div>
 
     <nav class="sidebar-nav">
-      <a href="#top" class="nav-item">
+      <router-link to="/dashboard" class="nav-item" :class="{ 'nav-item-active': route.name === 'dashboard' }">
         <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
           <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path>
           <polyline points="9 22 9 12 15 12 15 22"></polyline>
         </svg>
         <span>Dashboard</span>
-      </a>
+      </router-link>
 
-      <a href="#features" class="nav-item">
+      <router-link to="/" class="nav-item" :class="{ 'nav-item-active': route.name === 'home' }">
         <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
           <rect x="3" y="7" width="18" height="14" rx="2" ry="2"></rect>
           <line x1="8" y1="5" x2="16" y2="5"></line>
@@ -22,16 +22,16 @@
         </svg>
         <span>Tasks</span>
         <span class="nav-badge">2</span>
-      </a>
+      </router-link>
 
-      <a href="#how-it-works" class="nav-item">
+      <router-link to="/" class="nav-item">
         <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
           <polyline points="22 12 18 12 15 21 9 3 6 12 2 12"></polyline>
         </svg>
         <span>Activity</span>
-      </a>
+      </router-link>
 
-      <a href="#features" class="nav-item nav-item-active">
+      <router-link to="/" class="nav-item">
         <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
           <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path>
           <circle cx="9" cy="7" r="4"></circle>
@@ -39,15 +39,15 @@
           <path d="M16 3.13a4 4 0 0 1 0 7.75"></path>
         </svg>
         <span>Features</span>
-      </a>
+      </router-link>
 
-      <a href="#docs" class="nav-item">
+      <router-link to="/" class="nav-item">
         <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
           <circle cx="12" cy="12" r="3"></circle>
           <path d="M12 1v6m0 6v6m11-7h-6m-6 0H1"></path>
         </svg>
         <span>Settings</span>
-      </a>
+      </router-link>
     </nav>
 
     <div class="sidebar-section">
@@ -137,7 +137,9 @@
 </template>
 
 <script setup>
-// Simple sidebar navigation component
+import { useRoute } from 'vue-router'
+
+const route = useRoute()
 </script>
 
 <style scoped>
