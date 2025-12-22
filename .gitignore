@@ -1,0 +1,14 @@
+/backend/venv
+/backend/venv/
+/backend/venv/lib/
+/backend/venv/lib/python3.10/
+/backend/venv/lib/python3.10/site-packages/
+/backend/venv/lib/python3.10/site-packages/pip/
+/backend/venv/lib/python3.10/site-packages/pip-20.0.2-py3.10.egg/
+/backend/venv/lib/python3.10/site-packages/pip-20.0.2-py3.10.egg/EGG-INFO/
+/backend/venv/lib/python3.10/site-packages/pip-20.0.2-py3.10.egg/EGG-INFO/PKG-INFO
+/backend/venv/lib/python3.10/site-packages/pip-20.0.2-py3.10.egg/EGG-INFO/SOURCES.txt
+/backend/venv/lib/python3.10/site-packages/pip-20.0.2-py3.10.egg/EGG-INFO/dependency_links.txt
+/backend/venv/lib/python3.10/site-packages/pip-20.0.2-py3.10.egg/EGG-INFO/top_level.txt
+/backend/venv/lib/python3.10/site-packages/pip-20.0.2-py3.10.egg/EGG-INFO/zip-safe
+/backend/venv/lib/python3.10/site-packages/pip-20.0.2-py3.10.egg/EGG-INFO/zip-safe

@@ -93,6 +93,29 @@
             <button @click="removeFile" class="btn btn-ghost">Cancel</button>
           </div>
         </transition>
+
+        <transition name="fade">
+          <div v-if="uploadError" class="message message-error">
+            <svg class="message-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <circle cx="12" cy="12" r="10"></circle>
+              <line x1="12" y1="8" x2="12" y2="12"></line>
+              <line x1="12" y1="16" x2="12.01" y2="16"></line>
+            </svg>
+            <span>{{ uploadError }}</span>
+            <button @click="uploadError = null" class="message-close">×</button>
+          </div>
+        </transition>
+
+        <transition name="fade">
+          <div v-if="uploadSuccess" class="message message-success">
+            <svg class="message-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path>
+              <polyline points="22 4 12 14.01 9 11.01"></polyline>
+            </svg>
+            <span>{{ uploadSuccess }}</span>
+            <button @click="uploadSuccess = null" class="message-close">×</button>
+          </div>
+        </transition>
       </div>
 
       <transition name="fade">
@@ -152,6 +175,7 @@
 
 <script setup>
 import { ref } from 'vue'
+import { api } from '../services/api'
 
 const fileInput = ref(null)
 const selectedFile = ref(null)
@@ -159,6 +183,9 @@ const isDragging = ref(false)
 const isUploading = ref(false)
 const recentFiles = ref([])
 const hoveredFile = ref(null)
+const uploadError = ref(null)
+const uploadSuccess = ref(null)
+const analysisResult = ref(null)
 
 const triggerFileInput = () => {
   fileInput.value?.click()
@@ -222,6 +249,9 @@ const formatDate = (date) => {
 
 const removeFile = () => {
   selectedFile.value = null
+  uploadError.value = null
+  uploadSuccess.value = null
+  analysisResult.value = null
   if (fileInput.value) {
     fileInput.value.value = ''
   }
@@ -231,23 +261,40 @@ const uploadFile = async () => {
   if (!selectedFile.value) return
 
   isUploading.value = true
+  uploadError.value = null
+  uploadSuccess.value = null
+  analysisResult.value = null
 
-  // Simulate upload/processing
-  await new Promise(resolve => setTimeout(resolve, 2000))
+  try {
+    // Call backend API
+    const result = await api.uploadFile(selectedFile.value)
+    
+    // Store analysis result
+    analysisResult.value = result
+    
+    // Add to recent files
+    recentFiles.value.unshift({
+      id: Date.now(),
+      name: selectedFile.value.name,
+      size: selectedFile.value.size,
+      uploadedAt: new Date().toISOString(),
+      analysisResult: result
+    })
 
-  // Add to recent files
-  recentFiles.value.unshift({
-    id: Date.now(),
-    name: selectedFile.value.name,
-    size: selectedFile.value.size,
-    uploadedAt: new Date().toISOString()
-  })
+    uploadSuccess.value = `File analyzed successfully! Found ${result.rows} rows and ${result.cols} columns.`
 
-  // Reset
-  selectedFile.value = null
-  isUploading.value = false
-  if (fileInput.value) {
-    fileInput.value.value = ''
+    // Reset file selection after a short delay
+    setTimeout(() => {
+      selectedFile.value = null
+      if (fileInput.value) {
+        fileInput.value.value = ''
+      }
+    }, 1500)
+  } catch (error) {
+    uploadError.value = error.message || 'Failed to upload and analyze file. Please try again.'
+    console.error('Upload error:', error)
+  } finally {
+    isUploading.value = false
   }
 }
 
@@ -888,6 +935,72 @@ const clearRecentFiles = () => {
 
 .list-move {
   transition: transform 0.3s ease;
+}
+
+/* Message styles */
+.message {
+  margin-top: 1rem;
+  padding: 1rem 1.25rem;
+  border-radius: 0.75rem;
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  font-size: 0.9rem;
+  animation: slideDown 0.3s ease;
+  position: relative;
+}
+
+@keyframes slideDown {
+  from {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.message-error {
+  background: rgba(239, 68, 68, 0.1);
+  border: 1.5px solid rgba(239, 68, 68, 0.3);
+  color: #dc2626;
+}
+
+.message-success {
+  background: rgba(34, 197, 94, 0.1);
+  border: 1.5px solid rgba(34, 197, 94, 0.3);
+  color: #16a34a;
+}
+
+.message-icon {
+  width: 20px;
+  height: 20px;
+  flex-shrink: 0;
+}
+
+.message-close {
+  margin-left: auto;
+  background: transparent;
+  border: none;
+  color: inherit;
+  font-size: 1.5rem;
+  line-height: 1;
+  cursor: pointer;
+  padding: 0;
+  width: 24px;
+  height: 24px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 0.25rem;
+  transition: background-color 0.2s ease;
+  opacity: 0.7;
+}
+
+.message-close:hover {
+  opacity: 1;
+  background: rgba(0, 0, 0, 0.05);
 }
 
 @media (max-width: 768px) {
